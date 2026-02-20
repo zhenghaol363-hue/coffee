@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>☕ 幸运咖啡馆</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=ZCOOL+XiaoWei&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#fdf6ec;--espresso:#1a0a00;--caramel:#c07830;--gold:#e8b84b;--latte:#d4a96a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--espresso);color:var(--cream);font-family:'Noto Serif SC',serif;min-height:100vh;overflow-x:hidden;}
+#landing{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;position:relative;overflow:hidden;}
+.bg1,.bg2{position:absolute;border-radius:50%;filter:blur(80px);opacity:.15;pointer-events:none;}
+.bg1{width:500px;height:500px;background:var(--caramel);top:-150px;right:-150px;animation:f1 8s ease-in-out infinite;}
+.bg2{width:300px;height:300px;background:var(--gold);bottom:-100px;left:-80px;animation:f2 10s ease-in-out infinite;}
+@keyframes f1{0%,100%{transform:translate(0,0)}50%{transform:translate(-20px,20px)}}
+@keyframes f2{0%,100%{transform:translate(0,0)}50%{transform:translate(15px,-15px)}}
+.steam{display:flex;gap:12px;margin-bottom:8px;}
+.sl{width:3px;height:40px;background:linear-gradient(to top,transparent,var(--latte));border-radius:999px;animation:sr 2s ease-in-out infinite;opacity:.6;}
+.sl:nth-child(2){animation-delay:.3s;height:55px;}
+.sl:nth-child(3){animation-delay:.6s;height:35px;}
+@keyframes sr{0%,100%{transform:translateY(0) scaleX(1);opacity:.6}50%{transform:translateY(-10px) scaleX(1.3);opacity:.3}}
+.cup{font-size:80px;line-height:1;margin-bottom:12px;animation:bob 3s ease-in-out infinite;}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.shop-name{font-family:'ZCOOL XiaoWei',serif;font-size:clamp(32px,8vw,52px);color:var(--gold);text-align:center;letter-spacing:.1em;text-shadow:0 0 40px rgba(232,184,75,.4);margin-bottom:8px;}
+.tagline{font-family:'Ma Shan Zheng',cursive;font-size:18px;color:var(--latte);text-align:center;margin-bottom:48px;}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:360px;}
+.card{background:rgba(255,255,255,.05);border:1px solid rgba(232,184,75,.2);border-radius:20px;padding:28px 16px;text-align:center;cursor:pointer;transition:all .3s;backdrop-filter:blur(10px);position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(232,184,75,.1),transparent);opacity:0;transition:opacity .3s;}
+.card:hover::before{opacity:1;}
+.card:active{transform:scale(.97);}
+.card .icon{font-size:40px;margin-bottom:10px;display:block;}
+.card .lbl{font-size:16px;font-weight:700;}
+.card .sub{font-size:12px;color:var(--latte);margin-top:4px;}
+.card.fw{grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:12px;padding:20px;}
+.card.fw .icon{margin-bottom:0;font-size:32px;}
+.page{display:none;min-height:100vh;padding:20px 24px 60px;max-width:500px;margin:0 auto;}
+.page.active{display:block;}
+.ph{display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-top:8px;}
+.back{width:42px;height:42px;border-radius:50%;border:1px solid rgba(232,184,75,.3);background:transparent;color:var(--gold);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+.back:active{background:rgba(232,184,75,.1);transform:scale(.95);}
+.ptitle{font-family:'ZCOOL XiaoWei',serif;font-size:24px;color:var(--gold);}
+.lbox{background:rgba(255,255,255,.04);border:1px solid rgba(232,184,75,.2);border-radius:24px;padding:32px 24px;text-align:center;margin-bottom:24px;}
+.slots{display:flex;justify-content:center;gap:12px;margin:24px 0;}
+.slot{width:72px;height:90px;border:2px solid var(--caramel);border-radius:12px;background:var(--espresso);display:flex;align-items:center;justify-content:center;font-size:36px;}
+.lbtn{background:linear-gradient(135deg,var(--caramel),var(--gold));color:var(--espresso);border:none;border-radius:50px;padding:16px 40px;font-family:'ZCOOL XiaoWei',serif;font-size:20px;cursor:pointer;font-weight:700;transition:all .3s;box-shadow:0 4px 20px rgba(192,120,48,.4);margin-top:8px;}
+.lbtn:active{transform:scale(.96);}
+.lbtn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.cleft{font-size:13px;color:var(--latte);margin-top:16px;opacity:.7;}
+.pbox{margin-top:20px;padding:24px;background:rgba(232,184,75,.08);border-radius:16px;border:1px solid rgba(232,184,75,.3);text-align:center;display:none;}
+.pbox.show{display:block;animation:popin .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes popin{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
+.pemoji{font-size:48px;margin-bottom:8px;}
+.pname{font-size:22px;color:var(--gold);font-weight:700;}
+.pdesc{font-size:14px;color:var(--latte);margin-top:6px;line-height:1.6;}
+.fbox{background:rgba(255,255,255,.04);border:1px solid rgba(232,184,75,.2);border-radius:24px;padding:24px;margin-bottom:24px;}
+.flbl{font-size:14px;color:var(--latte);margin-bottom:8px;display:block;}
+.finput,.ftarea{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(232,184,75,.2);border-radius:12px;padding:14px 16px;color:var(--cream);font-family:'Noto Serif SC',serif;font-size:15px;outline:none;transition:border-color .2s;margin-bottom:16px;}
+.finput:focus,.ftarea:focus{border-color:var(--gold);}
+.ftarea{resize:none;height:100px;}
+.uparea{border:2px dashed rgba(232,184,75,.3);border-radius:16px;padding:32px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:16px;position:relative;}
+.uparea:hover{border-color:var(--gold);background:rgba(232,184,75,.05);}
+.uparea input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.uicon{font-size:36px;margin-bottom:8px;}
+.utxt{font-size:14px;color:var(--latte);}
+.previmg{width:100%;height:180px;object-fit:cover;border-radius:12px;margin-bottom:16px;display:none;}
+.sbtn{width:100%;background:linear-gradient(135deg,var(--caramel),var(--gold));color:var(--espresso);border:none;border-radius:50px;padding:16px;font-family:'ZCOOL XiaoWei',serif;font-size:18px;cursor:pointer;font-weight:700;transition:all .2s;}
+.sbtn:active{transform:scale(.98);}
+.wall{display:flex;flex-direction:column;gap:16px;}
+.pcard{background:rgba(255,255,255,.04);border:1px solid rgba(232,184,75,.15);border-radius:20px;padding:20px;animation:sup .4s ease;}
+@keyframes sup{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.phdr{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.pavatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--caramel),var(--gold));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.pname2{font-size:15px;font-weight:700;color:var(--gold);}
+.ptime{font-size:12px;color:var(--latte);opacity:.6;}
+.pimg{width:100%;border-radius:12px;margin-bottom:10px;max-height:200px;object-fit:cover;}
+.pmsg{font-size:14px;color:var(--cream);line-height:1.7;}
+.plikes{margin-top:12px;display:flex;align-items:center;gap:6px;color:var(--latte);font-size:13px;}
+.likebtn{background:none;border:none;cursor:pointer;font-size:18px;transition:transform .2s;}
+.likebtn:active{transform:scale(1.4);}
+.wtags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+.wtag{padding:6px 14px;border-radius:50px;border:1px solid rgba(232,184,75,.3);font-size:13px;color:var(--latte);cursor:pointer;transition:all .2s;background:transparent;font-family:'Noto Serif SC',serif;}
+.wtag.active{background:var(--gold);color:var(--espresso);border-color:var(--gold);}
+.wboard{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px;}
+.wnote{padding:16px 18px;border-radius:12px;font-size:14px;line-height:1.6;animation:popin .3s cubic-bezier(.34,1.56,.64,1);flex:1;min-width:140px;max-width:200px;}
+.wnote.c0{background:#4a3520;border:1px solid #6b4c2a;}
+.wnote.c1{background:#1a3a2a;border:1px solid #2a5a3e;}
+.wnote.c2{background:#1a2a3a;border:1px solid #2a3a5a;}
+.wnote.c3{background:#3a1a2a;border:1px solid #5a2a3a;}
+.wauthor{font-size:12px;color:var(--gold);margin-top:10px;opacity:.8;}
+.wcat{font-size:11px;margin-bottom:6px;opacity:.6;}
+.divider{height:1px;background:linear-gradient(to right,transparent,rgba(232,184,75,.3),transparent);margin:24px 0;}
+.wcount{font-size:13px;color:var(--latte);text-align:center;margin-bottom:16px;opacity:.7;}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--gold);color:var(--espresso);padding:12px 24px;border-radius:50px;font-size:15px;font-weight:700;z-index:1000;transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<div id="landing">
+  <div class="bg1"></div><div class="bg2"></div>
+  <div class="steam"><div class="sl"></div><div class="sl"></div><div class="sl"></div></div>
+  <div class="cup">☕</div>
+  <div class="shop-name">幸运咖啡馆</div>
+  <div class="tagline">每一杯都是小小的幸运 ✨</div>
+  <div class="menu-grid">
+    <div class="card" onclick="showPage('lottery')"><span class="icon">🎰</span><div class="lbl">今日抽奖</div><div class="sub">试试你的运气</div></div>
+    <div class="card" onclick="showPage('photo')"><span class="icon">📸</span><div class="lbl">拍照留言</div><div class="sub">记录美好时光</div></div>
+    <div class="card fw" onclick="showPage('wish')"><span class="icon">🌟</span><div><div class="lbl">许愿墙</div><div class="sub">把心愿挂在这里</div></div></div>
+  </div>
+</div>
+
+<div class="page" id="lottery-page">
+  <div class="ph"><button class="back" onclick="showPage('home')">←</button><div class="ptitle">🎰 今日抽奖</div></div>
+  <div class="lbox">
+    <div style="font-size:14px;color:var(--latte);margin-bottom:4px;">转动命运的齿轮</div>
+    <div style="font-size:13px;color:var(--latte);opacity:.6;">每日 3 次机会</div>
+    <div class="slots">
+      <div class="slot" id="s1">☕</div>
+      <div class="slot" id="s2">☕</div>
+      <div class="slot" id="s3">☕</div>
+    </div>
+    <button class="lbtn" id="spinBtn" onclick="spin()">开始抽奖</button>
+    <div class="cleft" id="cleft">今日剩余 3 次</div>
+  </div>
+  <div class="pbox" id="pbox">
+    <div class="pemoji" id="pemoji"></div>
+    <div class="pname" id="pname2"></div>
+    <div class="pdesc" id="pdesc"></div>
+  </div>
+</div>
+
+<div class="page" id="photo-page">
+  <div class="ph"><button class="back" onclick="showPage('home')">←</button><div class="ptitle">📸 拍照留言</div></div>
+  <div class="fbox">
+    <label class="flbl">你的名字</label>
+    <input type="text" class="finput" id="phn" placeholder="叫我什么呢…" maxlength="20">
+    <label class="flbl">上传照片（可选）</label>
+    <div class="uparea" id="uparea">
+      <input type="file" accept="image/*" id="phfile" onchange="prevPhoto(event)">
+      <div class="uicon">📷</div><div class="utxt">点击选择照片</div>
+    </div>
+    <img id="previmg" class="previmg" alt="">
+    <label class="flbl">留言</label>
+    <textarea class="ftarea" id="phm" placeholder="今天的咖啡很好喝，心情也很好…" maxlength="200"></textarea>
+    <button class="sbtn" onclick="submitPost()">✨ 发布留言</button>
+  </div>
+  <div class="divider"></div>
+  <div class="wcount" id="pcnt">还没有留言，来第一个吧！</div>
+  <div class="wall" id="pwall"></div>
+</div>
+
+<div class="page" id="wish-page">
+  <div class="ph"><button class="back" onclick="showPage('home')">←</button><div class="ptitle">🌟 许愿墙</div></div>
+  <div class="fbox">
+    <label class="flbl">你的心愿</label>
+    <textarea class="ftarea" id="wtxt" placeholder="我希望…" maxlength="100" style="height:80px"></textarea>
+    <label class="flbl">心愿类型</label>
+    <div class="wtags" id="wtags">
+      <button class="wtag active" data-cat="爱情">💕 爱情</button>
+      <button class="wtag" data-cat="学业">📚 学业</button>
+      <button class="wtag" data-cat="健康">🌿 健康</button>
+      <button class="wtag" data-cat="财富">💰 财富</button>
+      <button class="wtag" data-cat="旅行">✈️ 旅行</button>
+      <button class="wtag" data-cat="其他">⭐ 其他</button>
+    </div>
+    <label class="flbl" style="margin-top:8px">你的名字</label>
+    <input type="text" class="finput" id="wname" placeholder="许愿人…" maxlength="15">
+    <button class="sbtn" onclick="submitWish()">🕯️ 许下心愿</button>
+  </div>
+  <div class="divider"></div>
+  <div class="wcount" id="wcnt">已收录 0 个心愿</div>
+  <div class="wboard" id="wboard"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function showPage(p){
+  document.getElementById('landing').style.display='none';
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  if(p==='home'){document.getElementById('landing').style.display='flex';}
+  else{document.getElementById(p+'-page').classList.add('active');}
+}
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// LOTTERY
+const emojis=['☕','🍰','🧁','🎁','⭐','🌟','🫖','🍵'];
+const prizes=[
+  {e:'🎉',n:'恭喜！免费升大杯',d:'告诉店员即可享受免费升杯 ☕'},
+  {e:'🎂',n:'哇！免费小蛋糕',d:'凭此消息领取今日甜点一份 🍰'},
+  {e:'💝',n:'咖啡九折优惠',d:'本单享 9 折，美好一天从优惠开始 ✨'},
+  {e:'⭐',n:'积分 x2 加倍',d:'今日消费积分双倍奉送 🌟'},
+  {e:'🎲',n:'再接再厉！',d:'很遗憾，明天继续加油 💪'},
+];
+let chances=3,spinning=false;
+function spin(){
+  if(chances<=0||spinning)return;
+  spinning=true;chances--;
+  document.getElementById('cleft').textContent='今日剩余 '+chances+' 次';
+  if(chances===0)document.getElementById('spinBtn').disabled=true;
+  document.getElementById('pbox').classList.remove('show');
+  let f=0;
+  const iv=setInterval(()=>{
+    ['s1','s2','s3'].forEach(id=>{document.getElementById(id).textContent=emojis[Math.floor(Math.random()*emojis.length)];});
+    f++;
+    if(f>25){
+      clearInterval(iv);
+      const pr=prizes[Math.floor(Math.random()*prizes.length)];
+      document.getElementById('pemoji').textContent=pr.e;
+      document.getElementById('pname2').textContent=pr.n;
+      document.getElementById('pdesc').textContent=pr.d;
+      document.getElementById('pbox').classList.add('show');
+      spinning=false;
+    }
+  },80);
+}
+
+// PHOTO
+let posts=[
+  {name:'小云',msg:'第一次来，拿铁超好喝！环境也很温馨，以后常来 ☕',time:'2小时前',avatar:'☁️',likes:12,img:null},
+  {name:'阿沐',msg:'在这里工作了一整个下午，咖啡回味无穷，还送了小饼干！',time:'昨天',avatar:'🌙',likes:8,img:null},
+];
+function prevPhoto(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    const img=document.getElementById('previmg');
+    img.src=ev.target.result;img.style.display='block';
+    document.getElementById('uparea').style.display='none';
+  };
+  r.readAsDataURL(f);
+}
+function submitPost(){
+  const name=document.getElementById('phn').value.trim()||'匿名咖啡人';
+  const msg=document.getElementById('phm').value.trim();
+  const img=document.getElementById('previmg');
+  if(!msg){toast('请写点什么吧 ✍️');return;}
+  posts.unshift({name,msg,time:'刚刚',avatar:['☕','🌸','⭐','🍀','🌙','🌈'][Math.floor(Math.random()*6)],likes:0,img:img.style.display!=='none'?img.src:null});
+  renderPosts();
+  document.getElementById('phn').value='';document.getElementById('phm').value='';
+  img.style.display='none';img.src='';
+  document.getElementById('uparea').style.display='block';
+  document.getElementById('phfile').value='';
+  toast('留言发布成功！🎉');
+}
+function renderPosts(){
+  document.getElementById('pcnt').textContent='共 '+posts.length+' 条留言';
+  document.getElementById('pwall').innerHTML=posts.map((p,i)=>`
+    <div class="pcard">
+      <div class="phdr">
+        <div class="pavatar">${p.avatar}</div>
+        <div><div class="pname2">${p.name}</div><div class="ptime">${p.time}</div></div>
+      </div>
+      ${p.img?`<img class="pimg" src="${p.img}" alt="">`:''}
+      <div class="pmsg">${p.msg}</div>
+      <div class="plikes">
+        <button class="likebtn" onclick="likePost(${i})">❤️</button>
+        <span id="lc${i}">${p.likes}</span>
+      </div>
+    </div>
+  `).join('');
+}
+function likePost(i){posts[i].likes++;document.getElementById('lc'+i).textContent=posts[i].likes;}
+
+// WISH
+let wishes=[
+  {text:'希望今年能找到喜欢的工作',name:'小华',cat:'其他',c:0},
+  {text:'愿爸妈身体健健康康',name:'子涵',cat:'健康',c:1},
+  {text:'希望能遇到那个特别的人',name:'安安',cat:'爱情',c:3},
+  {text:'考研成功，金榜题名！',name:'大卫',cat:'学业',c:2},
+];
+let selCat='爱情';
+document.getElementById('wtags').addEventListener('click',e=>{
+  const b=e.target.closest('.wtag');if(!b)return;
+  document.querySelectorAll('.wtag').forEach(t=>t.classList.remove('active'));
+  b.classList.add('active');selCat=b.dataset.cat;
+});
+function submitWish(){
+  const text=document.getElementById('wtxt').value.trim();
+  const name=document.getElementById('wname').value.trim()||'匿名';
+  if(!text){toast('请写下你的心愿 🌟');return;}
+  wishes.unshift({text,name,cat:selCat,c:Math.floor(Math.random()*4)});
+  renderWishes();
+  document.getElementById('wtxt').value='';document.getElementById('wname').value='';
+  toast('心愿已许下，愿它成真 ✨');
+}
+function renderWishes(){
+  document.getElementById('wcnt').textContent='已收录 '+wishes.length+' 个心愿';
+  document.getElementById('wboard').innerHTML=wishes.map(w=>`
+    <div class="wnote c${w.c}">
+      <div class="wcat">${w.cat}</div>
+      <div>${w.text}</div>
+      <div class="wauthor">— ${w.name}</div>
+    </div>
+  `).join('');
+}
+
+renderPosts();renderWishes();
+</script>
+</body>
+</html>
